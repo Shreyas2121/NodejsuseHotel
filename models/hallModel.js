@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const roomSchema = mongoose.Schema({
+const hallSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
@@ -9,7 +9,7 @@ const roomSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  occupancy: {
+  max_guests: {
     type: Number,
     required: true,
   },
@@ -17,20 +17,20 @@ const roomSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  images: {
-    type: Map,
-    of: String,
-  },
-  total_rooms: {
-    type: Number,
+  amenities: {
+    type: [String],
     required: true,
   },
-  area_sq_ft: {
+  images: {
+    type: [String],
+    required: true,
+  },
+  total_halls: {
     type: Number,
     required: true,
   },
 });
 
-const Room = mongoose.model("Room", roomSchema);
+const Hall = mongoose.model("Hall", hallSchema);
 
-export default Room;
+export default Hall;

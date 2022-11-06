@@ -1,16 +1,14 @@
 import User from "../models/userModel.js";
 
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { user } = req.body;
 
-  const user = await User.findOne({ email });
+  const userExists = await User.findOne({ email: user.email });
 
-  if (user && (await user.matchPassword(password))) {
+  if (userExists && (await userExists.matchPassword(user.password))) {
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
+      message: "Login successful",
+      user: userExists,
     });
   } else {
     res.send("Invalid email or password");
@@ -19,31 +17,24 @@ export const loginUser = async (req, res) => {
 };
 
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { user } = req.body;
 
-  const userExists = await User.findOne({ email });
+  const userExists = await User.findOne({ email: user.email });
 
   if (userExists) {
-    res.send("User already exists");
+    res.json({ message: "User already exists" });
     res.status(400);
   }
 
-  const user = await User.create({
-    name,
-    email,
-    password,
-  });
+  const createdUser = await User.create(user);
 
   if (user) {
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
+      message: "User created successfully",
+      user: createdUser,
     });
   } else {
-    res.status(400);
-    throw new Error("Invalid user data");
+    res.json({ message: "Invalid user data" });
   }
 };
 

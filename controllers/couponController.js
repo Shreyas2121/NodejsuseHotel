@@ -36,12 +36,10 @@ export const validateCoupon = async (req, res) => {
   const { coupon } = req.body;
 
   const couponExists = await couponModel.findOne({ code: coupon });
-  console.log(couponExists);
 
   if (couponExists) {
-    res.send("Coupon is valid");
+    res.json(couponExists.discount_percentage);
   } else {
     res.send("Invalid coupon");
-    res.status(400);
   }
 };

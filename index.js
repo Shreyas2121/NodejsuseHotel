@@ -5,6 +5,11 @@ import cors from "cors";
 
 import userRoute from "./routes/userRoute.js";
 import couponRoute from "./routes/couponRoute.js";
+import roomRoute from "./routes/roomRoutes.js";
+import hallRoute from "./routes/hallRoute.js";
+import addonRoute from "./routes/addonRoute.js";
+import reviewRoute from "./routes/reviewRoutes.js";
+import bookingRoomRoute from "./routes/bookingRoomRoutes.js";
 
 dotenv.config();
 
@@ -17,6 +22,11 @@ connectDb();
 
 app.use("/api/", userRoute);
 app.use("/api/", couponRoute);
+app.use("/api/", roomRoute);
+app.use("/api/", hallRoute);
+app.use("/api/", addonRoute);
+app.use("/api/", reviewRoute);
+app.use("/api/", bookingRoomRoute);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

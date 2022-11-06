@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
   },
   password: {
     type: String,
@@ -21,8 +22,17 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: Number,
-    min: 10,
-    max: 10,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /\d{10}/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid phone number!`,
+    },
+  },
+  reviewGiven: {
+    type: Boolean,
+    default: false,
   },
 });
 
