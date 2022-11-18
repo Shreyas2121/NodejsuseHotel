@@ -30,10 +30,10 @@ const userSchema = new mongoose.Schema({
       message: (props) => `${props.value} is not a valid phone number!`,
     },
   },
-  reviewGiven: {
-    type: Boolean,
-    default: false,
-  },
+  // reviewGiven: {
+  //   type: Boolean,
+  //   default: false,
+  // },
 });
 
 userSchema.pre("save", async function (next) {

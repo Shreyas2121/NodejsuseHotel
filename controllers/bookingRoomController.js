@@ -15,13 +15,13 @@ export const createBooking = async (req, res) => {
     return res.send("User not found");
   }
 
-  const booking = new BookingRoom(req.body);
+  const booking = await new BookingRoom(req.body).populate("user");
 
   try {
     const createdBooking = await booking.save();
     res.status(201).json({
       message: "Booking created",
-      booking: createdBooking.populate("user"),
+      booking,
     });
   } catch (err) {
     res.send(err.message);
@@ -30,9 +30,7 @@ export const createBooking = async (req, res) => {
 
 export const getBookings = async (req, res) => {
   try {
-    const bookings = await BookingRoom.find({})
-      .populate("room")
-      .populate("user");
+    const bookings = await BookingRoom.find({}).populate("user");
     res.json(bookings);
   } catch (err) {
     res.send(err.message);
@@ -43,9 +41,7 @@ export const getBookingByUserId = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const bookings = await BookingRoom.find({ user: id })
-      .populate("room")
-      .populate("user");
+    const bookings = await BookingRoom.find({ user: id }).populate("user");
     res.json(bookings);
   } catch (err) {
     res.send(err.message);
@@ -68,11 +64,13 @@ export const getRoomAvailability = async (req, res) => {
 
   try {
     const bookingRoomCheckin = await BookingRoom.find({
-      checkIn: { $lte: parsedCheckIn, $gt: parsedCheckOut },
+      checkIn: { $lte: parsedCheckIn },
+      checkOut: { $gt: parsedCheckIn },
     });
 
     const bookingRoomCheckout = await BookingRoom.find({
-      checkOut: { $lt: parsedCheckIn, $gte: parsedCheckOut },
+      checkIn: { $lt: parsedCheckOut },
+      checkOut: { $gte: parsedCheckOut },
     });
 
     const bookingRoomBetween = await BookingRoom.find({
@@ -98,10 +96,10 @@ export const getRoomAvailability = async (req, res) => {
     let bookedRoomType = {};
 
     bookingRoom.forEach((booking) => {
-      if (bookedRoomType[booking["room"]["category"]]) {
-        bookedRoomType[booking["room"]["category"]] += booking["numOfRooms"];
+      if (bookedRoomType[booking["category"]]) {
+        bookedRoomType[booking["category"]] += booking["numOfRooms"];
       } else {
-        bookedRoomType[booking["room"]["category"]] = booking["numOfRooms"];
+        bookedRoomType[booking["category"]] = booking["numOfRooms"];
       }
     });
 
@@ -117,10 +115,18 @@ export const getRoomAvailability = async (req, res) => {
 
 export const deleteBooking = async (req, res) => {
   const { id } = req.params;
+  console.log(id);
 
   try {
-    const deletedBooking = await BookingRoom.findByIdAndDelete(id);
-    res.json(deletedBooking);
+    const deletedBooking = await BookingRoom.findById(id);
+    console.log(deletedBooking);
+
+    if (deletedBooking) {
+      await deletedBooking.deleteOne();
+      res.json({ message: "Booking deleted" });
+    } else {
+      res.send("Booking not found");
+    }
   } catch (err) {
     res.send(err.message);
   }

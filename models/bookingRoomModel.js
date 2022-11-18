@@ -6,6 +6,10 @@ const bookingRoomSchema = mongoose.Schema({
     required: true,
     ref: "User",
   },
+  reviewGiven: {
+    type: Boolean,
+    default: false,
+  },
   bookingDate: {
     type: Date,
     required: true,

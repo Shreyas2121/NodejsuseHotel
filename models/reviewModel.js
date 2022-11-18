@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
-  reviewBy: {
+  bookingId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "BookingRoom",
   },
   comment: {
     type: String,

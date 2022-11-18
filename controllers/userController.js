@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 
 export const loginUser = async (req, res) => {
   const { user } = req.body;
+  console.log(user);
 
   const userExists = await User.findOne({ email: user.email });
 
@@ -18,6 +19,7 @@ export const loginUser = async (req, res) => {
 
 export const registerUser = async (req, res) => {
   const { user } = req.body;
+  console.log(user);
 
   const userExists = await User.findOne({ email: user.email });
 
